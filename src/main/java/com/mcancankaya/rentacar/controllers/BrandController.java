@@ -1,7 +1,12 @@
 package com.mcancankaya.rentacar.controllers;
 
-import com.mcancankaya.rentacar.entities.Brand;
 import com.mcancankaya.rentacar.services.BrandService;
+import com.mcancankaya.rentacar.services.dtos.requests.brands.CreateBrandRequest;
+import com.mcancankaya.rentacar.services.dtos.requests.brands.UpdateBrandRequest;
+import com.mcancankaya.rentacar.services.dtos.responses.brands.CreatedBrandResponse;
+import com.mcancankaya.rentacar.services.dtos.responses.brands.DeletedBrandResponse;
+import com.mcancankaya.rentacar.services.dtos.responses.brands.GetAllBrandResponse;
+import com.mcancankaya.rentacar.services.dtos.responses.brands.UpdatedBrandResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,26 +20,22 @@ public class BrandController {
     private final BrandService brandService;
 
     @GetMapping(path = "/getAll")
-    public List<Brand> getAllBrands() {
-        return brandService.getAllBrands();
+    public ResponseEntity<List<GetAllBrandResponse>> getAllBrands() {
+        return ResponseEntity.ok(brandService.getAllBrands());
     }
 
     @PostMapping(path = "/save")
-    public Brand saveOneBrand(@RequestBody Brand brand) {
-        return brandService.saveOneBrand(brand);
+    public CreatedBrandResponse saveOneBrand(@RequestBody CreateBrandRequest createBrandRequest) {
+        return brandService.saveOneBrand(createBrandRequest);
     }
 
     @PutMapping(path = "/update")
-    public ResponseEntity<?> updateBrand(@RequestBody Brand brand) {
-        try {
-            return ResponseEntity.ok(brandService.updateBrand(brand));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public UpdatedBrandResponse updateBrand(@RequestBody UpdateBrandRequest updateBrandRequest) {
+        return brandService.updateBrand(updateBrandRequest);
     }
 
-    @DeleteMapping(path = "/delete/{id}")
-    public String deleteBrandById(@PathVariable("id") Integer id) {
+    @DeleteMapping(path = "/delete")
+    public DeletedBrandResponse deleteBrandById(@RequestBody() Integer id) {
         return brandService.deleteById(id);
     }
 }

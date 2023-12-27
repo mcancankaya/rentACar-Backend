@@ -1,7 +1,14 @@
 package com.mcancankaya.rentacar.services;
 
+import com.mcancankaya.rentacar.core.mapping.ModelMapperService;
 import com.mcancankaya.rentacar.entities.Brand;
 import com.mcancankaya.rentacar.repositories.BrandRepository;
+import com.mcancankaya.rentacar.services.dtos.requests.brands.CreateBrandRequest;
+import com.mcancankaya.rentacar.services.dtos.requests.brands.UpdateBrandRequest;
+import com.mcancankaya.rentacar.services.dtos.responses.brands.CreatedBrandResponse;
+import com.mcancankaya.rentacar.services.dtos.responses.brands.DeletedBrandResponse;
+import com.mcancankaya.rentacar.services.dtos.responses.brands.GetAllBrandResponse;
+import com.mcancankaya.rentacar.services.dtos.responses.brands.UpdatedBrandResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -13,34 +20,33 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BrandService {
     private final BrandRepository brandRepository;
+    private final ModelMapperService modelMapperService;
 
-    public List<Brand> getAllBrands() {
-        return brandRepository.findAll();
+
+    public CreatedBrandResponse saveOneBrand(CreateBrandRequest createBrandRequest) {
+
+        Brand brand = modelMapperService.forRequest().map(createBrandRequest, Brand.class);
+        Brand createdBrand = brandRepository.save(brand);
+        return modelMapperService.forResponse().map(createdBrand, CreatedBrandResponse.class);
+
     }
 
-    public Brand saveOneBrand(Brand brand) {
-        return brandRepository.save(brand);
+    public UpdatedBrandResponse updateBrand(UpdateBrandRequest updateBrandRequest) {
+
+        Brand brand = modelMapperService.forRequest().map(updateBrandRequest, Brand.class);
+        Brand updatedBrand = brandRepository.save(brand);
+        return modelMapperService.forResponse().map(updatedBrand, UpdatedBrandResponse.class);
     }
 
-    public String deleteById(Integer id) {
-        try {
-            brandRepository.deleteById(id);
-            return "Delete success";
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+    public DeletedBrandResponse deleteById(Integer id) {
+        brandRepository.deleteById(id);
+        return DeletedBrandResponse.builder().id(id).build();
     }
 
-    public Brand updateBrand(Brand brand) throws Exception {
-        Optional<Brand> optBrand = brandRepository.findById(brand.getId());
-        if (optBrand.isPresent()) {
-            Brand updatedBrand = optBrand.get();
-            updatedBrand.setName(brand.getName().isBlank() ? updatedBrand.getName() : brand.getName());
-            updatedBrand.setLogo(brand.getLogo());
-            updatedBrand.setModels(brand.getModels());
-            return brandRepository.save(updatedBrand);
-        }
-        throw new Exception("Update Error");
+    public List<GetAllBrandResponse> getAllBrands() {
+        List<Brand> brands = brandRepository.findAll();
+        List<GetAllBrandResponse> responseList = brands.stream().map(brand -> modelMapperService.forResponse().map(brand, GetAllBrandResponse.class)).toList();
+        return responseList;
     }
 
 
