@@ -18,11 +18,10 @@ import java.util.List;
 public class Brand {
     @Id
     @GeneratedValue(generator = "brand_id_generator")
-    @SequenceGenerator(name = "brand_id_generator", sequenceName = "car_id_seq")
+    @SequenceGenerator(name = "brand_id_generator", sequenceName = "car_id_seq", allocationSize = 1)
     private Integer id;
 
     @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<Model> models;
 
     @Column(name = "name")

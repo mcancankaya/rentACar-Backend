@@ -1,7 +1,5 @@
 package com.mcancankaya.rentacar.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,18 +17,17 @@ import java.util.List;
 public class Model {
     @Id
     @GeneratedValue(generator = "model_id_generator")
-    @SequenceGenerator(name = "model_id_generator", sequenceName = "model_id_seq")
+    @SequenceGenerator(name = "model_id_generator", sequenceName = "model_id_seq", allocationSize = 1)
     private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "brand_id", referencedColumnName = "id")
-    @JsonBackReference
-    private Brand brand;
-
-    @OneToMany(mappedBy = "model", fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Car> cars;
 
     @Column(name = "name")
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
+    @OneToMany(mappedBy = "model", fetch = FetchType.LAZY)
+    private List<Car> cars;
+
 }

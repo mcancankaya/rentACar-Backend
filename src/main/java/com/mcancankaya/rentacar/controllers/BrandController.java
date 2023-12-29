@@ -1,13 +1,11 @@
 package com.mcancankaya.rentacar.controllers;
 
 import com.mcancankaya.rentacar.services.BrandService;
-import com.mcancankaya.rentacar.services.dtos.requests.brands.CreateBrandRequest;
-import com.mcancankaya.rentacar.services.dtos.requests.brands.UpdateBrandRequest;
-import com.mcancankaya.rentacar.services.dtos.responses.brands.CreatedBrandResponse;
-import com.mcancankaya.rentacar.services.dtos.responses.brands.DeletedBrandResponse;
-import com.mcancankaya.rentacar.services.dtos.responses.brands.GetAllBrandResponse;
-import com.mcancankaya.rentacar.services.dtos.responses.brands.UpdatedBrandResponse;
+import com.mcancankaya.rentacar.services.dtos.responses.brands.*;
+import com.mcancankaya.rentacar.services.dtos.requests.brands.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,23 +17,34 @@ import java.util.List;
 public class BrandController {
     private final BrandService brandService;
 
-    @GetMapping(path = "/getAll")
-    public ResponseEntity<List<GetAllBrandResponse>> getAllBrands() {
-        return ResponseEntity.ok(brandService.getAllBrands());
-    }
-
-    @PostMapping(path = "/save")
-    public CreatedBrandResponse saveOneBrand(@RequestBody CreateBrandRequest createBrandRequest) {
-        return brandService.saveOneBrand(createBrandRequest);
+    @PostMapping(path = "/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BrandResponse create(@Valid @RequestBody CreateBrandRequest createBrandRequest) {
+        return brandService.create(createBrandRequest);
     }
 
     @PutMapping(path = "/update")
-    public UpdatedBrandResponse updateBrand(@RequestBody UpdateBrandRequest updateBrandRequest) {
-        return brandService.updateBrand(updateBrandRequest);
+    public BrandResponse update(@Valid @RequestBody UpdateBrandRequest updateBrandRequest) {
+        return brandService.update(updateBrandRequest);
     }
 
     @DeleteMapping(path = "/delete")
-    public DeletedBrandResponse deleteBrandById(@RequestBody() Integer id) {
+    public BrandResponse deleteById(@RequestBody Integer id) {
         return brandService.deleteById(id);
+    }
+
+    @GetMapping(path = "/getAll")
+    public ResponseEntity<List<BrandResponse>> getAll() {
+        return ResponseEntity.ok(brandService.getAll());
+    }
+
+    @GetMapping(path = "/getById")
+    public BrandResponse getById(@RequestBody Integer id) {
+        return brandService.getById(id);
+    }
+
+    @GetMapping(path = "/getByIds")
+    public List<BrandResponse> getByIds(@RequestBody List<Integer> ids) {
+        return brandService.getByIds(ids);
     }
 }

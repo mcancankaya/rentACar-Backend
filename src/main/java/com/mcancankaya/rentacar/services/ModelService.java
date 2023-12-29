@@ -1,44 +1,60 @@
 package com.mcancankaya.rentacar.services;
 
+import com.mcancankaya.rentacar.core.mapping.ModelMapperService;
 import com.mcancankaya.rentacar.entities.Model;
 import com.mcancankaya.rentacar.repositories.ModelRepository;
+import com.mcancankaya.rentacar.services.dtos.requests.models.CreatedModelRequest;
+import com.mcancankaya.rentacar.services.dtos.requests.models.UpdatedModelRequest;
+import com.mcancankaya.rentacar.services.dtos.responses.models.CreatedModelResponse;
+import com.mcancankaya.rentacar.services.dtos.responses.models.ModelResponse;
+import com.mcancankaya.rentacar.services.rules.ModelRuleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ModelService {
     private final ModelRepository modelRepository;
+    private final ModelMapperService modelMapperService;
+    private final ModelRuleService modelRuleService;
 
-    public List<Model> getAllModels() {
-        return modelRepository.findAll();
+    public CreatedModelResponse create(CreatedModelRequest modelRequest) {
+        modelRuleService.modelNameInThisBrandAlreadyExist(modelRequest.getName(), modelRequest.getBrandId());
+
+        Model model = modelMapperService.forRequest().map(modelRequest, Model.class);
+        Model createdModel = modelRepository.save(model);
+        return modelMapperService.forResponse().map(createdModel, CreatedModelResponse.class);
     }
 
-    public Model saveOneModel(Model model) {
-        return modelRepository.save(model);
+    public CreatedModelResponse update(UpdatedModelRequest modelRequest) {
+        modelRuleService.modelIsAvailable(modelRequest.getId());
+        modelRuleService.modelNameInThisBrandAlreadyExist(modelRequest.getName(), modelRequest.getBrandId());
+
+        Model model = modelMapperService.forRequest().map(modelRequest, Model.class);
+        Model updatedModel = modelRepository.save(model);
+        return modelMapperService.forResponse().map(updatedModel, CreatedModelResponse.class);
     }
 
-    public Model updateCar(Model model) throws Exception {
-        Optional<Model> optModel = modelRepository.findById(model.getId());
-        if (optModel.isPresent()) {
-            Model updateModel = optModel.get();
-            updateModel.setName(model.getName());
-            updateModel.setBrand(model.getBrand());
-            updateModel.setCars(model.getCars());
-            return modelRepository.save(updateModel);
-        }
-        throw new Exception("Update Error.");
+    public ModelResponse deleteById(Integer id) {
+        Model model = modelRuleService.modelIsAvailable(id);
+
+        modelRepository.delete(model);
+        return modelMapperService.forResponse().map(model, ModelResponse.class);
     }
 
-    public String deleteById(Integer id) {
-        try {
-            modelRepository.deleteById(id);
-            return "Delete Success.";
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+    public List<ModelResponse> getAll() {
+        List<Model> models = modelRepository.findAll();
+        return models.stream().map(model -> modelMapperService.forResponse().map(model, ModelResponse.class)).toList();
+    }
+
+    public ModelResponse getById(Integer id) {
+        Model model = modelRuleService.modelIsAvailable(id);
+        return modelMapperService.forResponse().map(model, ModelResponse.class);
+    }
+
+    public List<ModelResponse> getByIds(List<Integer> ids) {
+        return modelRepository.findAllById(ids).stream().map(model -> modelMapperService.forResponse().map(model, ModelResponse.class)).toList();
     }
 }

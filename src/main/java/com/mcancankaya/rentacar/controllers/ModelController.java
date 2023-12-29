@@ -1,8 +1,13 @@
 package com.mcancankaya.rentacar.controllers;
 
-import com.mcancankaya.rentacar.entities.Model;
 import com.mcancankaya.rentacar.services.ModelService;
+import com.mcancankaya.rentacar.services.dtos.requests.models.CreatedModelRequest;
+import com.mcancankaya.rentacar.services.dtos.requests.models.UpdatedModelRequest;
+import com.mcancankaya.rentacar.services.dtos.responses.models.CreatedModelResponse;
+import com.mcancankaya.rentacar.services.dtos.responses.models.ModelResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,27 +19,34 @@ import java.util.List;
 public class ModelController {
     private final ModelService modelService;
 
-    @GetMapping(path = "/getAll")
-    public List<Model> getAllModels() {
-        return modelService.getAllModels();
-    }
-
-    @PostMapping(path = "/save")
-    public Model saveOneModel(@RequestBody Model model) {
-        return modelService.saveOneModel(model);
+    @PostMapping(path = "/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CreatedModelResponse create(@Valid @RequestBody CreatedModelRequest modelRequest) {
+        return modelService.create(modelRequest);
     }
 
     @PutMapping(path = "/update")
-    public ResponseEntity<?> updateModel(@RequestBody Model model) {
-        try {
-            return ResponseEntity.ok(modelService.updateCar(model));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public CreatedModelResponse update(@Valid @RequestBody UpdatedModelRequest modelRequest) {
+        return modelService.update(modelRequest);
     }
 
-    @DeleteMapping(path = "/{id}")
-    public String deleteModelById(@PathVariable("id") Integer id) {
+    @DeleteMapping(path = "/delete")
+    public ModelResponse deleteById(@RequestBody Integer id) {
         return modelService.deleteById(id);
+    }
+
+    @GetMapping(path = "/getAll")
+    public ResponseEntity<List<ModelResponse>> getAll() {
+        return ResponseEntity.ok(modelService.getAll());
+    }
+
+    @GetMapping(path = "/getById")
+    public ModelResponse getById(@RequestBody Integer id) {
+        return modelService.getById(id);
+    }
+
+    @GetMapping(path = "/getByIds")
+    public List<ModelResponse> getByIds(@RequestBody List<Integer> ids) {
+        return modelService.getByIds(ids);
     }
 }

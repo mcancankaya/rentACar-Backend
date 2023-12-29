@@ -5,49 +5,61 @@ import com.mcancankaya.rentacar.entities.Brand;
 import com.mcancankaya.rentacar.repositories.BrandRepository;
 import com.mcancankaya.rentacar.services.dtos.requests.brands.CreateBrandRequest;
 import com.mcancankaya.rentacar.services.dtos.requests.brands.UpdateBrandRequest;
-import com.mcancankaya.rentacar.services.dtos.responses.brands.CreatedBrandResponse;
-import com.mcancankaya.rentacar.services.dtos.responses.brands.DeletedBrandResponse;
-import com.mcancankaya.rentacar.services.dtos.responses.brands.GetAllBrandResponse;
-import com.mcancankaya.rentacar.services.dtos.responses.brands.UpdatedBrandResponse;
+import com.mcancankaya.rentacar.services.dtos.responses.brands.*;
+import com.mcancankaya.rentacar.services.rules.BrandRuleService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class BrandService {
     private final BrandRepository brandRepository;
     private final ModelMapperService modelMapperService;
+    private final BrandRuleService brandRuleService;
 
 
-    public CreatedBrandResponse saveOneBrand(CreateBrandRequest createBrandRequest) {
+    public BrandResponse create(CreateBrandRequest createBrandRequest) {
+        brandRuleService.brandNameAlreadyExist(createBrandRequest.getName());
 
         Brand brand = modelMapperService.forRequest().map(createBrandRequest, Brand.class);
         Brand createdBrand = brandRepository.save(brand);
-        return modelMapperService.forResponse().map(createdBrand, CreatedBrandResponse.class);
-
+        return modelMapperService.forResponse().map(createdBrand, BrandResponse.class);
     }
 
-    public UpdatedBrandResponse updateBrand(UpdateBrandRequest updateBrandRequest) {
+    public BrandResponse update(UpdateBrandRequest updateBrandRequest) {
+        brandRuleService.brandIsAvailable(updateBrandRequest.getId());
+        brandRuleService.brandNameAlreadyExist(updateBrandRequest.getName());
 
         Brand brand = modelMapperService.forRequest().map(updateBrandRequest, Brand.class);
         Brand updatedBrand = brandRepository.save(brand);
-        return modelMapperService.forResponse().map(updatedBrand, UpdatedBrandResponse.class);
+        return modelMapperService.forResponse().map(updatedBrand, BrandResponse.class);
     }
 
-    public DeletedBrandResponse deleteById(Integer id) {
-        brandRepository.deleteById(id);
-        return DeletedBrandResponse.builder().id(id).build();
+    public BrandResponse deleteById(Integer id) {
+        Brand brand = brandRuleService.brandIsAvailable(id);
+
+        brandRepository.delete(brand);
+        BrandResponse brandResponse = modelMapperService.forResponse().map(brand, BrandResponse.class);
+        return brandResponse;
     }
 
-    public List<GetAllBrandResponse> getAllBrands() {
+    public List<BrandResponse> getAll() {
         List<Brand> brands = brandRepository.findAll();
-        List<GetAllBrandResponse> responseList = brands.stream().map(brand -> modelMapperService.forResponse().map(brand, GetAllBrandResponse.class)).toList();
+        List<BrandResponse> responseList = brands.stream().map(brand -> modelMapperService.forResponse().map(brand, BrandResponse.class)).toList();
         return responseList;
     }
 
+    public BrandResponse getById(Integer id) {
+        Brand brand = brandRuleService.brandIsAvailable(id);
+        BrandResponse brandResponse = modelMapperService.forResponse().map(brand, BrandResponse.class);
+        return brandResponse;
+    }
 
+    public List<BrandResponse> getByIds(List<Integer> ids) {
+        List<Brand> brands = brandRepository.findAllById(ids);
+        return brands.stream().map(brand -> modelMapperService.forResponse().map(brand, BrandResponse.class)).toList();
+    }
 }
