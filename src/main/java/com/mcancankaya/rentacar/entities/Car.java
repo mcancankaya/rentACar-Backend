@@ -1,6 +1,8 @@
 package com.mcancankaya.rentacar.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mcancankaya.rentacar.enums.CarBodyType;
 import com.mcancankaya.rentacar.enums.Color;
 import com.mcancankaya.rentacar.enums.FuelType;
@@ -9,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -19,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class Car {
     @Id
     @GeneratedValue(generator = "car_id_generator")
-    @SequenceGenerator(name = "car_id_generator", sequenceName = "car_id_seq")
+    @SequenceGenerator(name = "car_id_generator", sequenceName = "car_id_seq", allocationSize = 1)
     private Integer id;
 
     @ManyToOne
@@ -39,6 +43,10 @@ public class Car {
     private FuelType fuelType;
 
     @Column(name = "color")
+    @Enumerated(EnumType.STRING)
     private Color color;
 
+    @OneToMany(mappedBy = "car", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<RentCar> rentCars;
 }
