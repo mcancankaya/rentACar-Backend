@@ -41,12 +41,12 @@ public class ModelController {
     }
 
     @GetMapping(path = "/getById")
-    public ModelResponse getById(@RequestBody Integer id) {
+    public ModelResponse getById(@RequestParam("id") Integer id) {
         return modelService.getById(id);
     }
 
     @GetMapping(path = "/getByIds")
-    public List<ModelResponse> getByIds(@RequestBody List<Integer> ids) {
+    public List<ModelResponse> getByIds(@RequestParam("ids") List<Integer> ids) {
         return modelService.getByIds(ids);
     }
 }

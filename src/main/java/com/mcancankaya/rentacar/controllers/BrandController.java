@@ -39,12 +39,12 @@ public class BrandController {
     }
 
     @GetMapping(path = "/getById")
-    public BrandResponse getById(@RequestBody Integer id) {
+    public BrandResponse getById(@RequestParam("id") Integer id) {
         return brandService.getById(id);
     }
 
     @GetMapping(path = "/getByIds")
-    public List<BrandResponse> getByIds(@RequestBody List<Integer> ids) {
+    public List<BrandResponse> getByIds(@RequestParam("ids") List<Integer> ids) {
         return brandService.getByIds(ids);
     }
 }
