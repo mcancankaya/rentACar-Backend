@@ -1,8 +1,12 @@
 package com.mcancankaya.rentacar.controllers;
 
-import com.mcancankaya.rentacar.entities.Car;
 import com.mcancankaya.rentacar.services.CarService;
+import com.mcancankaya.rentacar.services.dtos.requests.cars.CreateCarRequest;
+import com.mcancankaya.rentacar.services.dtos.requests.cars.UpdateCarRequest;
+import com.mcancankaya.rentacar.services.dtos.responses.cars.CarResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,27 +18,34 @@ import java.util.List;
 public class CarController {
     private final CarService carService;
 
-    @GetMapping(path = "/getAll")
-    public List<Car> getAllCars() {
-        return carService.getAllCars();
-    }
-
-    @PostMapping(path = "/save")
-    public Car saveOneCar(@RequestBody Car car) {
-        return carService.saveOneCar(car);
+    @PostMapping(path = "/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CarResponse create(@Valid @RequestBody CreateCarRequest createCarRequest) {
+        return carService.create(createCarRequest);
     }
 
     @PutMapping(path = "/update")
-    public ResponseEntity<?> updateOneCar(@RequestBody Car car) {
-        try {
-            return ResponseEntity.ok(carService.updateCar(car));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public CarResponse update(@Valid @RequestBody UpdateCarRequest updateCarRequest) {
+        return carService.update(updateCarRequest);
     }
 
-    @DeleteMapping(path = "/{id}")
-    public String deleteCarById(@PathVariable("id") Integer id) {
+    @DeleteMapping(path = "/delete")
+    public CarResponse deleteById(@RequestBody Integer id) {
         return carService.deleteById(id);
+    }
+
+    @GetMapping(path = "/getAll")
+    public ResponseEntity<List<CarResponse>> getAll() {
+        return ResponseEntity.ok(carService.getAll());
+    }
+
+    @GetMapping(path = "/getById")
+    public CarResponse getById(@RequestParam("id") Integer id) {
+        return carService.getById(id);
+    }
+
+    @GetMapping(path = "/getByIds")
+    public List<CarResponse> getByIds(@RequestParam("ids") List<Integer> ids) {
+        return carService.getByIds(ids);
     }
 }
