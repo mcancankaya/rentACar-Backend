@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +20,9 @@ public class CreateCarRequest {
     @NotNull
     @Min(2010)
     private Integer year;
+    @NotNull
+    @Positive
+    private BigDecimal dailyPrice;
     @NotNull
     @NotBlank
     @EnumCheck(enumClass = CarBodyType.class)

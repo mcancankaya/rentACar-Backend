@@ -7,9 +7,12 @@ import com.mcancankaya.rentacar.enums.FuelType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +25,9 @@ public class UpdateCarRequest {
     @NotNull
     @Min(2010)
     private Integer year;
+    @NotNull
+    @Positive
+    private BigDecimal dailyPrice;
     @NotNull
     @NotBlank
     @EnumCheck(enumClass = CarBodyType.class)
