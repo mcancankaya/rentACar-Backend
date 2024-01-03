@@ -1,9 +1,8 @@
 package com.mcancankaya.rentacar.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mcancankaya.rentacar.enums.CarBodyType;
+import com.mcancankaya.rentacar.enums.CarStatus;
 import com.mcancankaya.rentacar.enums.Color;
 import com.mcancankaya.rentacar.enums.FuelType;
 import jakarta.persistence.*;
@@ -24,12 +23,11 @@ import java.util.List;
 public class Car {
     @Id
     @GeneratedValue(generator = "car_id_generator")
-    @SequenceGenerator(name = "car_id_generator", sequenceName = "car_id_seq", allocationSize = 1)
+    @SequenceGenerator(schema = "rentacar", name = "car_id_generator", sequenceName = "car_id_seq", allocationSize = 1)
     private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "model_id", referencedColumnName = "id")
-    @JsonBackReference
     private Model model;
 
     @Column(name = "year")
@@ -50,7 +48,10 @@ public class Car {
     @Enumerated(EnumType.STRING)
     private Color color;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private CarStatus carStatus;
+
     @OneToMany(mappedBy = "car", fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<RentCar> rentCars;
 }
