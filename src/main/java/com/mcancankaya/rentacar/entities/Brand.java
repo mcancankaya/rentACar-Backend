@@ -1,6 +1,5 @@
 package com.mcancankaya.rentacar.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +17,7 @@ import java.util.List;
 public class Brand {
     @Id
     @GeneratedValue(generator = "brand_id_generator")
-    @SequenceGenerator(name = "brand_id_generator", sequenceName = "car_id_seq", allocationSize = 1)
+    @SequenceGenerator(schema = "rentacar", name = "brand_id_generator", sequenceName = "brand_id_seq", allocationSize = 1)
     private Integer id;
 
     @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY)

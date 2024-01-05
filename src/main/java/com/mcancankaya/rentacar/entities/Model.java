@@ -17,7 +17,7 @@ import java.util.List;
 public class Model {
     @Id
     @GeneratedValue(generator = "model_id_generator")
-    @SequenceGenerator(name = "model_id_generator", sequenceName = "model_id_seq", allocationSize = 1)
+    @SequenceGenerator(schema = "rentacar", name = "model_id_generator", sequenceName = "model_id_seq", allocationSize = 1)
     private Integer id;
 
     @Column(name = "name")
