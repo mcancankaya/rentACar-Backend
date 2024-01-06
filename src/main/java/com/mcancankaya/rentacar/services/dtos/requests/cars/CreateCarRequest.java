@@ -2,6 +2,7 @@ package com.mcancankaya.rentacar.services.dtos.requests.cars;
 
 import com.mcancankaya.rentacar.core.validators.EnumCheck;
 import com.mcancankaya.rentacar.enums.CarBodyType;
+import com.mcancankaya.rentacar.enums.CarStatus;
 import com.mcancankaya.rentacar.enums.Color;
 import com.mcancankaya.rentacar.enums.FuelType;
 import jakarta.validation.constraints.*;
@@ -15,6 +16,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateCarRequest {
+    @Null
+    private Integer id;
     @NotNull
     private Integer modelId;
     @NotNull
@@ -35,4 +38,8 @@ public class CreateCarRequest {
     @NotBlank
     @EnumCheck(enumClass = Color.class)
     private String color;
+    @NotNull
+    @NotBlank
+    @EnumCheck(enumClass = CarStatus.class)
+    private String carStatus;
 }
