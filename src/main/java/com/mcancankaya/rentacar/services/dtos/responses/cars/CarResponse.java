@@ -11,10 +11,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class CarResponse {
     private Integer id;
-    private String modelName;
+    private Integer modelId;
     private Integer year;
     private BigDecimal dailyPrice;
     private String bodyType;
     private String fuelType;
     private String color;
+    private String carStatus;
 }

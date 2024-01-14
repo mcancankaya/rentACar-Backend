@@ -2,6 +2,7 @@ package com.mcancankaya.rentacar.core.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
 
 import java.util.Map;

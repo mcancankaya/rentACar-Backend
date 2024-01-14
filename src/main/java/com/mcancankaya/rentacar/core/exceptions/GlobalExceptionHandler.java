@@ -32,5 +32,5 @@ public class GlobalExceptionHandler {
         businessProblemDetails.setDetail(businessException.getMessage());
         return businessProblemDetails;
     }
-
+    
 }

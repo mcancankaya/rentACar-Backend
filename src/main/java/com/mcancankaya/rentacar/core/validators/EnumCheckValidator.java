@@ -16,7 +16,7 @@ public class EnumCheckValidator implements ConstraintValidator<EnumCheck, String
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         for (Enum<?> enumValue : values) {
-            if (enumValue.name().equalsIgnoreCase(s)) {
+            if (enumValue.name().equals(s)) {
                 return true;
             }
         }

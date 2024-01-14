@@ -2,6 +2,7 @@ package com.mcancankaya.rentacar.services;
 
 import com.mcancankaya.rentacar.core.mapping.ModelMapperService;
 import com.mcancankaya.rentacar.entities.Car;
+import com.mcancankaya.rentacar.enums.CarStatus;
 import com.mcancankaya.rentacar.repositories.CarRepository;
 import com.mcancankaya.rentacar.services.dtos.requests.cars.CreateCarRequest;
 import com.mcancankaya.rentacar.services.dtos.requests.cars.UpdateCarRequest;
@@ -18,7 +19,7 @@ public class CarService {
     private final CarRepository carRepository;
     private final CarRuleService carRuleService;
     private final ModelMapperService modelMapperService;
-    
+
     public CarResponse create(CreateCarRequest createCarRequest) {
         carRuleService.checkModelIsAvailable(createCarRequest.getModelId());
 

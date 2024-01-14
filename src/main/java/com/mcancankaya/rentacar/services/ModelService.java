@@ -57,4 +57,8 @@ public class ModelService {
     public List<ModelResponse> getByIds(List<Integer> ids) {
         return modelRepository.findAllById(ids).stream().map(model -> modelMapperService.forResponse().map(model, ModelResponse.class)).toList();
     }
+
+    public List<ModelResponse> getByBrandId(Integer brandId) {
+        return modelRepository.findAllByBrand_Id(brandId).stream().map(model -> modelMapperService.forResponse().map(model, ModelResponse.class)).toList();
+    }
 }

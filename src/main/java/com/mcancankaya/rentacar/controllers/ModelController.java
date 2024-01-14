@@ -49,4 +49,9 @@ public class ModelController {
     public List<ModelResponse> getByIds(@RequestParam("ids") List<Integer> ids) {
         return modelService.getByIds(ids);
     }
+
+    @GetMapping(path = "/getByBrandId")
+    public List<ModelResponse> getByBrandId(@RequestParam("brandId") Integer brandId){
+        return modelService.getByBrandId(brandId);
+    }
 }
