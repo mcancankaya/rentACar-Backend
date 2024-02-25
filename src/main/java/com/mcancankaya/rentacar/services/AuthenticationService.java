@@ -5,6 +5,7 @@ import com.mcancankaya.rentacar.entities.User;
 import com.mcancankaya.rentacar.enums.Role;
 import com.mcancankaya.rentacar.repositories.UserRepository;
 import com.mcancankaya.rentacar.services.dtos.auth.LoginResponse;
+import com.mcancankaya.rentacar.services.dtos.auth.RefreshTokenRequest;
 import com.mcancankaya.rentacar.services.dtos.auth.SignInRequest;
 import com.mcancankaya.rentacar.services.dtos.auth.SignUpRequest;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,18 @@ public class AuthenticationService {
         loginResponse.setToken(jwt);
         loginResponse.setRefreshToken(refreshToken);
         return loginResponse;
+    }
+
+    public LoginResponse refreshToken(RefreshTokenRequest request) {
+        String userEmail = jwtService.extractUserName(request.getToken());
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        if (jwtService.isTokenValid(request.getToken(), user)) {
+            var jwt = jwtService.generateToken(user);
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setToken(jwt);
+            loginResponse.setRefreshToken(request.getToken());
+            return loginResponse;
+        }
+        return null;
     }
 }

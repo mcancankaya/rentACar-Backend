@@ -3,6 +3,7 @@ package com.mcancankaya.rentacar.controllers;
 import com.mcancankaya.rentacar.entities.User;
 import com.mcancankaya.rentacar.services.AuthenticationService;
 import com.mcancankaya.rentacar.services.dtos.auth.LoginResponse;
+import com.mcancankaya.rentacar.services.dtos.auth.RefreshTokenRequest;
 import com.mcancankaya.rentacar.services.dtos.auth.SignInRequest;
 import com.mcancankaya.rentacar.services.dtos.auth.SignUpRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +27,10 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<LoginResponse> signIn(@RequestBody SignInRequest request) {
         return ResponseEntity.ok(authenticationService.signIn(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authenticationService.refreshToken(request));
     }
 }
